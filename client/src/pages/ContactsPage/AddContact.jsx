@@ -4,14 +4,24 @@ import {addContact} from '../../services/contactsApi';
 const AddContact = ({onAdd, onCancel}) => {
     const [name, setName] = useState('');
     const [jobTitle, setJobTitle] = useState('');
-    const [photo, setPhoto] = useState('/assets/default.png');
+    const [photo, setPhoto] = useState('');
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
     const [company, setCompany] = useState('');
     const [street, setStreet] = useState('');
     const [city, setCity] = useState('');
     const [telephone, setTelephone] = useState('');
+    const [telephoneError, setTelephoneError] = useState('');
 
+    const handleTelephoneChange = (event) => {
+        const { value } = event.target;
+        if (/^[0-9()+\s-]+$/.test(value)) {
+            setTelephone(value);
+            setTelephoneError('');
+        } else {
+            setTelephoneError('Use only numbers and these symbols: ( ) -');
+        }
+    };
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -38,77 +48,70 @@ const AddContact = ({onAdd, onCancel}) => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <div className="form-group">
+            <div>
                 <label htmlFor="name">Name:</label>
                 <input
                     type="text"
-                    className="form-control"
                     id="name"
                     value={name}
                     onChange={(event) => setName(event.target.value)}
                 />
             </div>
-            <div className="form-group">
+            <div>
                 <label htmlFor="jobTitle">Job Title:</label>
                 <input
                     type="text"
-                    className="form-control"
                     id="jobTitle"
                     value={jobTitle}
                     onChange={(event) => setJobTitle(event.target.value)}
                 />
             </div>
-            <div className="form-group">
+            <div>
                 <label htmlFor="photo">Photo URL:</label>
                 <input
                     type="text"
-                    className="form-control"
                     id="photo"
                     value={photo}
                     onChange={(event) => setPhoto(event.target.value)}
                 />
             </div>
-            <div className="form-group">
+            <div>
                 <label htmlFor="latitude">Latitude:</label>
                 <input
                     type="text"
-                    className="form-control"
                     id="latitude"
                     value={latitude}
                     onChange={(event) => setLatitude(event.target.value)}
                 />
             </div>
-            <div className="form-group">
+            <div>
                 <label htmlFor="longitude">Longitude:</label>
                 <input
                     type="text"
-                    className="form-control"
                     id="longitude"
                     value={longitude}
                     onChange={(event) => setLongitude(event.target.value)}
                 />
             </div>
-            <div className="form-group">
+            <div>
                 <label htmlFor="company">Company:</label>
                 <input
                     type="text"
-                    className="form-control"
                     id="company"
                     value={company}
                     onChange={(event) => setCompany(event.target.value)}
                 />
             </div>
-            <div className="form-group">
+            <div>
                 <label htmlFor="street">Street:</label>
                 <input
                     type="text"
-                    className="form-control"
                     id="street"
                     value={street}
                     onChange={(event) => setStreet(event.target.value)}
                 />
             </div>
-            <div className="form-group">
+            <div>
                 <label htmlFor="city">City:</label>
                 <input
                     type="text"
@@ -118,20 +121,21 @@ const AddContact = ({onAdd, onCancel}) => {
                     onChange={(event) => setCity(event.target.value)}
                 />
             </div>
-            <div className="form-group">
+            <div>
                 <label htmlFor="telephone">Telephone:</label>
                 <input
                     type="text"
-                    className="form-control"
                     id="telephone"
                     value={telephone}
-                    onChange={(event) => setTelephone(event.target.value)}
+                    onChange={handleTelephoneChange}
                 />
             </div>
-            <button type="submit" className="btn btn-primary mr-2" onClick={handleSubmit}>
+            {telephoneError && <p style={{color: 'red'}}>{telephoneError}</p>}
+
+            <button type="submit" onClick={handleSubmit}>
                 Save
             </button>
-            <button type="button" className="btn btn-secondary" onClick={onCancel}>
+            <button type="button" onClick={onCancel}>
                 Cancel
             </button>
         </form>

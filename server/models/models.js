@@ -1,4 +1,4 @@
-const sequelize = require('../db');
+/*const sequelize = require('../db');
 const { DataTypes } = require('sequelize');
 
 const Contact = sequelize.define('contact',{
@@ -17,4 +17,4 @@ const Contact = sequelize.define('contact',{
 module.exports = {
     Contact,
 };
-
+*/

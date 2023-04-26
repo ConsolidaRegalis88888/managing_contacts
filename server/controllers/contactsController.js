@@ -1,19 +1,13 @@
-const axios = require('axios');
-
 const uuid = require('uuid');
 const path = require('path');
-const { Contact } = require('../models/models');
 const ApiError = require('../error/ApiError');
+const { contacts } = require('./fakeContacts');
+
 
 class ContactsController {
     async create(req, res, next) {
         try {
-            let { id, name, company, street, city, telephone, job_title } = req.body;
-            const { photo } = req.files;
-            let fileName = uuid.v4() + ".jpg";
-            await photo.mv(path.resolve(__dirname, '..', 'static', fileName));
-
-            //const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=${API_KEY}`);
+            let { id, name, company, street, city, telephone, job_title, photo } = req.body;
             const fakeResponse = {
                 data: {
                     results: [{
@@ -27,8 +21,8 @@ class ContactsController {
                 }
             };
             const { lat, lng } = fakeResponse.data.results[0].geometry.location;
-            //const { lat, lng } = response.data.results[0].geometry.location;
-            const contact = await Contact.create({
+
+            const contact = {
                 id,
                 name,
                 company,
@@ -36,10 +30,11 @@ class ContactsController {
                 city,
                 telephone,
                 job_title,
-                photo: fileName,
+                photo,
                 gpsLatitude: lat,
                 gpsLongitude: lng,
-            });
+            };
+            contacts.push(contact);
             return res.json(contact);
         } catch (e) {
             next(ApiError.badRequest(e.message));
@@ -49,12 +44,10 @@ class ContactsController {
     async editContact(req, res, next) {
         try {
             const { id } = req.params;
-            const { name, company, street, city, telephone, job_title } = req.body;
-            const { photo } = req.files;
-            const fileName = uuid.v4() + ".jpg";
-            await photo.mv(path.resolve(__dirname, '..', 'static', fileName));
-
-            //const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=${API_KEY}`);
+            const { name, company, street, city, telephone, job_title, photo } = req.body;
+           // const { photo } = req.files;
+            // const fileName = uuid.v4() + ".jpg";
+           // await photo.mv(path.resolve(__dirname, '..', 'static', fileName));
             const fakeResponse = {
                 data: {
                     results: [{
@@ -69,23 +62,25 @@ class ContactsController {
             };
 
             const { lat, lng } = fakeResponse.data.results[0].geometry.location;
-            //const { lat, lng } = response.data.results[0].geometry.location;
 
-            const contact = await Contact.findOne({ where: { id } });
-            if (!contact) {
+            const contactIndex = contacts.findIndex(contact => contact.id == id);
+            if (contactIndex === -1) {
                 return next(ApiError.notFound(`Contact with ID ${id} not found`));
             }
-            await contact.update({
+
+            const contact = {
+                id,
                 name,
                 company,
                 street,
                 city,
                 telephone,
                 job_title,
-                photo: fileName,
+                photo,
                 gpsLatitude: lat,
                 gpsLongitude: lng,
-            });
+            };
+            contacts[contactIndex] = contact;
 
             return res.json(contact);
         } catch (e) {
@@ -94,30 +89,29 @@ class ContactsController {
     }
 
     async getAll(req, res) {
-        let contacts = await Contact.findAndCountAll();
         return res.json(contacts);
     }
 
     async getOne(req, res) {
         const { id } = req.params;
-        const contact = await Contact.findOne({ where: { id } });
+        const contact = contacts.find(contact => contact.id == id);
         return res.json(contact);
     }
 
     async remove(req, res, next) {
         try {
             const { id } = req.params;
-            const contact = await Contact.findOne({ where: { id } });
-            if (!contact) {
+            const contactIndex = contacts.findIndex(contact => contact.id == id);
+            if (contactIndex === -1) {
                 return next(ApiError.notFound(`Contact with ID ${id} not found`));
             }
-            await contact.destroy();
+            const contact = contacts[contactIndex];
+            contacts.splice(contactIndex, 1);
             return res.json({ message: `Contact with ID ${id} has been deleted` });
         } catch (e) {
             next(ApiError.badRequest(e.message));
         }
     }
-
 }
 
 module.exports = new ContactsController();

@@ -16,6 +16,7 @@ const EditContact = ({ contact, onEdit, onCancel }) => {
     const [street, setStreet] = useState(contact.street);
     const [city, setCity] = useState(contact.city);
     const [telephone, setTelephone] = useState(contact.telephone);
+    const [telephoneError, setTelephoneError] = useState('');
     const [photo, setPhoto] = useState(null);
 
     const handleNameChange = (event) => setName(event.target.value);
@@ -25,12 +26,17 @@ const EditContact = ({ contact, onEdit, onCancel }) => {
     const handleCompanyChange = (event) => setCompany(event.target.value);
     const handleStreetChange = (event) => setStreet(event.target.value);
     const handleCityChange = (event) => setCity(event.target.value);
+
     const handleTelephoneChange = (event) => {
         const { value } = event.target;
-        if (/^[0-9()+]+$/.test(value)) {
+        if (/^[0-9()+\s-]+$/.test(value)) {
             setTelephone(value);
+            setTelephoneError('');
+        } else {
+            setTelephoneError('Use only numbers and these symbols: ( ) -');
         }
     };
+
     const handlePhotoChange = (event) => {
         const file = event.target.files[0];
         setPhoto(file);
@@ -49,7 +55,6 @@ const EditContact = ({ contact, onEdit, onCancel }) => {
             telephone,
         };
         await onEdit(updatedContact);
-        console.log(updatedContact)
     };
     return (
         <div className="card">
@@ -81,14 +86,19 @@ const EditContact = ({ contact, onEdit, onCancel }) => {
                     /><Input label="Company" value={company} onChange={handleCompanyChange} />
                     <Input label="Street" value={street} onChange={handleStreetChange} />
                     <Input label="City" value={city} onChange={handleCityChange} />
-                    <Input label="Telephone number" value={telephone} onChange={handleTelephoneChange} />
+                    <Input
+                        label="Telephone number"
+                        value={telephone}
+                        onChange={handleTelephoneChange}
+                    />
+                    {telephoneError && <p style={{color: 'red'}}>{telephoneError}</p>}
                 </div>
             </div>
             <div className="contact__actions">
-                <button className="btn btn-primary" onClick={handleSave}>
+                <button onClick={handleSave}>
                     Save
                 </button>
-                <button className="btn btn-secondary" onClick={onCancel}>
+                <button onClick={onCancel}>
                     Cancel
                 </button>
             </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ContactItem from "./ContactItem";
 import EditContact from "./EditContact";
 import AddContact from "./AddContact";
-import './styles/contactsPage.css';
+import './styles/contactsPageStyles.css';
 import {deleteContact, fetchContacts, updateContact} from "../../services/contactsApi";
 import addContact from "./AddContact";
 
