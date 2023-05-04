@@ -1,0 +1,62 @@
+.card {
+    box-sizing: border-box;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: white;
+}
+
+.contact {
+    display: flex;
+    flex-direction: row;
+}
+
+.contact__photo {
+    flex: 2;
+    flex-direction: column;
+    align-content: space-between;
+    justify-content: center;
+}
+.contact__information{
+    flex: 3;
+}
+.contact__photo img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 3px 20px 3px 3px;
+}
+
+.contact__job-title {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.contact__name {
+    font-weight: bold;
+}
+.contact__location {
+    display: flex;
+    align-items: center;
+}
+.contact__company{
+    font-weight: bold;
+}
+.contact__actions {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.icon-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
